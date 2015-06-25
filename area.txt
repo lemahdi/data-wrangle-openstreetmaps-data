@@ -1,5 +1,7 @@
 http://www.openstreetmap.org/node/531668011#map=11/1.2908/103.8517
 
-I chose Singapore because I recently moved to this city, and I think it's an original way to discover ot.
+I chose Singapore because I recently moved to this city, and I think it's an original way to discover it.
 
-Singapore is a City-State located in South-East Asia. It is surrounded by Malaysia and Indonesia. Many communities live here and there are 4 official languages. The city combines modern and authentic architectures. Commuting is very easy as roads follow a good planification and the offer of public transport is diversified. 
+Singapore is a City-State located in South-East Asia. It is surrounded by Malaysia and Indonesia. Many communities live here and there are 4 official languages. The city combines modern and authentic architectures. Commuting is very easy as roads follow a good planification and the offer of public transport is diversified. We can find public WCs almost everywhere in Singapore especially in malls, hence restaurants do not provide this service.
+
+The purpose of my analyses will be to help people find the nearest public toilet as this could be a serious issue especially for elder men.
