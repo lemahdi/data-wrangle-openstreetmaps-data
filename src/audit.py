@@ -131,47 +131,54 @@ def audit_key_colon_counter():
 
 # filter incorrect street names, and clean correct street names
 # ending with numbers: "Neo Tiew Lane 3"
-type1_re = re.compile(r'[#\-\d]+\.?$')
+ends_with_d_re = re.compile(r'[#\-\d]+\.?$')
 # ending with non-white space characters: 
-type2_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
+ends_with_nonws_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
 # extracting last word: "Neo Tiew (Lane) (3)"
-type3_re = re.compile(r'\s?(\w+)\s([#\-\d]+)\.?$', re.IGNORECASE)
+get_last_w_and_d_re = re.compile(r'\s?(\w+)\s([#\-\d]+)\.?$', re.IGNORECASE)
 # special translation
-type4_re = re.compile(r'.*\b(jalan|lorong|jln\.?|jl\.?)\s(.+)$', re.IGNORECASE)
+translate_re = re.compile(r'.*\b(jalan|lorong|jln\.?|jl\.?)\s(.+)$', re.IGNORECASE)
 # street type is not the last word, but step-last
-type5_re = re.compile(r'\s?(\w+)\s(\w+)\.?$', re.IGNORECASE)
+get_2_last_w_re = re.compile(r'\s?(\w+)\s(\w+)\.?$', re.IGNORECASE)
 def process_addr(value):
     addr = { "value" : value, "status" : False }
     street_type = "NULL"
     new_value = value
+    house_nb = None
 
-    if type4_re.search(value): # "Jalan Pemimpin"
-        street_type = type4_re.search(value).group(1).lower().capitalize()
+    if translate_re.search(value): # "Jalan Pemimpin"
+        s = translate_re.search(value)
+        street_type = s.group(1).lower().capitalize()
         street_type = STREET_TYPES_MAP[street_type]
-        street_tail = type4_re.search(value).group(2)
+        street_tail = s.group(2)
         new_value = street_tail + " " + street_type # "Pemimpin Road"
-    elif type1_re.search(value): # "Ang Mo Kio Avenue 10"
-        if type3_re.search(value):
-            s = type3_re.search(value)
+    elif ends_with_d_re.search(value): # "Ang Mo Kio Avenue 10"
+        if get_last_w_and_d_re.search(value):
+            s = get_last_w_and_d_re.search(value)
             street_type = s.group(1) # "Avenue"
             street_nb = s.group(2) # "10"
             new_value = street_nb + " " + value.replace(s.group(), "") + " " + street_type # "10 Ang Mo Kio Avenue"
-    elif type2_re.search(value): # "Dover Avenue" or "Admiralty Road West"
-        street_type = type2_re.search(value).group()
-        if type5_re.search(value): # "Admiralty Road West"
-            s = type5_re.search(value)
+            house_nb = street_nb
+    elif ends_with_nonws_re.search(value): # "Dover Avenue" or "Admiralty Road West"
+        street_type = ends_with_nonws_re.search(value).group()
+        if get_2_last_w_re.search(value): # "Admiralty Road West"
+            s = get_2_last_w_re.search(value)
             street_type2 = s.group(1).lower().capitalize() # "Road"
             if street_type2 in STREET_TYPES_MAP.keys() or street_type2 in STREET_TYPES:
                 if s.group(2) not in STREET_TYPES_MAP.keys() and s.group(2) not in STREET_TYPES: # to prevent such cases ".. Park Road"
                     street_type = street_type2
 
     if street_type in STREET_TYPES_MAP.keys(): # "Ave"
-        street_type = STREET_TYPES_MAP[street_type] # "Avenue"
+        new_street_type = STREET_TYPES_MAP[street_type]
+        new_value = new_value.replace(street_type, new_street_type) # ".. Avenue .."
+        street_type = new_street_type # "Avenue"
     street_type = street_type.lower().capitalize()
     if street_type in STREET_TYPES:
         addr["type"] = street_type
         addr["status"] = True
         addr["new_value"] = new_value
+        if house_nb:
+            addr["housenumber"] = house_nb
     return addr
 
 def audit_addr_street():
@@ -188,19 +195,19 @@ def audit_addr_street():
 
 # filter incorrect postcodes, and clean correct postcodes
 # 5-digits post codes
-type6_re = re.compile(r'[^\d]*([\d]{5})$')
+with_5_d_re = re.compile(r'[^\d]*([\d]{5})$')
 # 6-digits post codes
-type7_re = re.compile(r'[^\d]*([\d]{6})$')
+with_7_d_re = re.compile(r'[^\d]*([\d]{6})$')
 def process_postcode(value):
     postcode = { "value" : value, "status" : False }
     new_value = value
 
-    match = type7_re.search(value)
+    match = with_7_d_re.search(value)
     if match:
         postcode["new_value"] = match.group(1)
         postcode["status"] = True
         return postcode
-    match = type6_re.search(value)
+    match = with_5_d_re.search(value)
     if match:
         postcode["new_value"] = "0" + match.group(1)
         postcode["status"] = True
