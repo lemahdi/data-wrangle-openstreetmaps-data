@@ -4,3 +4,4 @@ output/*
 src/__pycache__
 src/*.pyc
 *.osm
+.DS_Store
