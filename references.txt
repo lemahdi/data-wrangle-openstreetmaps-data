@@ -1,1 +1,4 @@
-N/A
+http://api.mongodb.org/python/current/examples/geo.html
+http://docs.mongodb.org/manual/reference/operator/query/near/#op._S_near
+http://docs.mongodb.org/manual/reference/command/geoNear/#dbcmd.geoNear
+
