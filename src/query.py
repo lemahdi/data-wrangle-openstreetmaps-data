@@ -53,6 +53,12 @@ def most_active_users(db):
                  { "$limit" : 10 } ]
     return db.singapore.aggregate(pipeline)
 
+# number of nondes and ways
+def number_of_tags(db):
+    pipeline = [ { "$group" : { "_id" : "$type",
+                                "count" : { "$sum" : 1 } } } ]
+    return db.singapore.aggregate(pipeline)
+
 # area with most restaurants
 def nearest_toilet(db, restaurant_id, max_distance=None):
     query = { "_id" : ObjectId(restaurant_id) }
