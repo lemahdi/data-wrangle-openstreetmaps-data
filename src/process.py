@@ -11,7 +11,7 @@ from audit import process_postcode
 
 
 OSM_FILE = "../data/singapore.osm"
-JSON_FILE = "../output/singapore.json"
+JSON_FILE = "../data/singapore.json"
 
 pb_chars_re = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
 

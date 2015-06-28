@@ -75,6 +75,7 @@ def nearest_toilet(db, restaurant_id, max_distance=None):
             toilet["_id"] = str(toilet["_id"])
             fo.write(json.dumps(toilet, indent=2) + "\n")
     return toilets
+
 # extreme coordinates
 def extrems(db, min_or_max, lon_or_lat):
     if min_or_max not in ["min", "max"]:
@@ -90,6 +91,4 @@ def extrems(db, min_or_max, lon_or_lat):
     pipeline = [ { "$project" : { lon_or_lat : "$pos.coordinates[{0}]".format(str(lonlat)) } },
                  { "$sort" : { lon_or_lat : minmax } },
                  { "$limit" : 1 } ]
-    c = db.singapore.aggregate(pipeline)
-    return c
-    #return db.singapore.find_one( { "_id" : c.next()["_id"] } )
+    return db.singapore.aggregate(pipeline)
