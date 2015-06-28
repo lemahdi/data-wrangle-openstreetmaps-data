@@ -2,6 +2,6 @@ arc/*
 output/*
 src/__pycache__
 src/*.pyc
-*.osm
-*.json
+singapore.osm
+singapore.json
 .DS_Store
